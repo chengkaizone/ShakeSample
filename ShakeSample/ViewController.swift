@@ -20,8 +20,14 @@ class ViewController: UIViewController {
     var shakeUpLineImageView:UIImageView!;
     var shakeDownLineImageView:UIImageView!;
     
+    var shakeBackgroundImageView:UIImageView!;
+    
+    var shakeView:UIView!;
+    var bottomBar:UIView!;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        //self.view.backgroundColor = UIColor.blackColor();
         
         UIApplication.sharedApplication().applicationSupportsShakeToEdit = true;
         
@@ -34,31 +40,58 @@ class ViewController: UIViewController {
         self.setup();
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews();
+        
+        self.shakeView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height * 4 / 5);
+        self.bottomBar.frame = CGRectMake(0, self.shakeView.frame.origin.y + CGRectGetHeight(self.shakeView.frame), self.view.frame.size.width, self.view.frame.size.height - self.shakeView.frame.size.height);
+        self.shakeBackgroundImageView.frame = self.shakeView.bounds;
+        self.shakeUpImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.shakeView.frame.size.height / 2);
+        self.shakeUpLineImageView.frame = CGRectMake(0, CGRectGetMaxY(self.shakeUpImageView.frame) - 3, CGRectGetWidth(self.shakeUpImageView.bounds), 8);
+        self.shakeDownImageView.frame = CGRectMake(0, CGRectGetMaxY(self.shakeUpImageView.frame), CGRectGetWidth(self.shakeUpImageView.frame), CGRectGetHeight(self.shakeView.frame) - CGRectGetHeight(self.shakeUpImageView.frame));
+        self.shakeDownLineImageView.frame = CGRectMake(0, 3 - 8, CGRectGetWidth(self.shakeUpImageView.bounds), 8);
+    }
+    
     func setup() {
-        self.shakeUpImageView = UIImageView(frame: CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height / 3.0));
+        self.shakeView = UIView();
+        
+        self.bottomBar = UIView();
+        self.bottomBar.backgroundColor = UIColor.blackColor();
+        
+        self.shakeBackgroundImageView = UIImageView();
+        self.shakeBackgroundImageView.image = UIImage(named: "ic_shake_logo_down");
+        self.shakeBackgroundImageView.contentMode = .ScaleAspectFit;
+        self.shakeView.addSubview(self.shakeBackgroundImageView);
+        
+        self.shakeUpImageView = UIImageView();
         self.shakeUpImageView.backgroundColor = self.view.backgroundColor;
         self.shakeUpImageView.userInteractionEnabled = false;
         self.shakeUpImageView.image = UIImage(named: "ic_shake_logo_up");
+        self.shakeUpImageView.contentMode = UIViewContentMode.Bottom;
         
-        self.shakeUpLineImageView = UIImageView(frame: CGRectMake(0, CGRectGetMaxY(self.view.bounds) - 3, CGRectGetWidth(self.shakeUpImageView.bounds), 10));
+        self.shakeUpLineImageView = UIImageView();
         self.shakeUpLineImageView.hidden = true;
         shakeUpLineImageView.image = UIImage(named: "ic_shake_line_up");
         
         self.shakeUpImageView.addSubview(shakeUpLineImageView);
         
-        self.shakeDownImageView = UIImageView(frame: CGRectMake(0, CGRectGetMaxY(self.shakeUpImageView.frame), CGRectGetWidth(self.shakeUpImageView.frame), CGRectGetHeight(self.view.bounds) - CGRectGetHeight(self.shakeUpImageView.frame)));
+        self.shakeDownImageView = UIImageView();
         self.shakeDownImageView.backgroundColor = self.view.backgroundColor;
         self.shakeDownImageView.userInteractionEnabled = false;
         self.shakeDownImageView.image = UIImage(named: "ic_shake_logo_down");
+        self.shakeDownImageView.contentMode = UIViewContentMode.Top;
         
-        self.shakeDownLineImageView = UIImageView(frame: CGRectMake(0, CGRectGetMaxY(self.view.bounds) - 3, CGRectGetWidth(self.shakeUpImageView.bounds), 10));
+        self.shakeDownLineImageView = UIImageView();
         self.shakeDownLineImageView.hidden = true;
         self.shakeDownLineImageView.image = UIImage(named: "ic_shake_line_down");
         
         self.shakeDownImageView.addSubview(shakeDownLineImageView);
         
-        self.view.addSubview(self.shakeUpImageView);
-        self.view.addSubview(self.shakeDownImageView);
+        self.shakeView.addSubview(self.shakeUpImageView);
+        self.shakeView.addSubview(self.shakeDownImageView);
+        
+        self.view.addSubview(self.shakeView);
+        self.view.addSubview(self.bottomBar);
     }
 
     override func didReceiveMemoryWarning() {
